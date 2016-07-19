@@ -10,11 +10,10 @@ public class ChatClient {
 		// TODO Auto-generated method stub
 		try{
 			Socket s=new Socket("localhost",12345);
-		
 			//start Client Thread
 			new Thread(new ClientThread(s)).start();
 			//get the flow of Socket
-			PrintWriter PW=new PrintWriter(s.getOutputStream());
+			PrintWriter PW=new PrintWriter(s.getOutputStream(),true);
 			String message=null;
 			//read the input from keyboard
 			BufferedReader BRflow=new BufferedReader(new InputStreamReader(System.in));

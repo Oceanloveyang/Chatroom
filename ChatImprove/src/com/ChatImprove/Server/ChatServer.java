@@ -11,11 +11,13 @@ public class ChatServer {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		try {
+			@SuppressWarnings("resource")
 			ServerSocket ss=new ServerSocket(12345);
 			System.out.println("Server is running, waiting for clients connections!");
 			while(true){
-				new Thread(new ServerThread(ss.accept())).start();
-				System.out.println("Client"+ss.getInetAddress()+"connected to the server!");
+				Socket s=ss.accept();
+				new Thread(new ServerThread(s)).start();
+				System.out.println("Client "+s.getInetAddress()+" connected to the server!");
 			}
 		} catch (IOException e) {
 			// TODO: handle exception
