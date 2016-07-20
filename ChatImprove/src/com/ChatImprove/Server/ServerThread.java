@@ -39,7 +39,7 @@ public class ServerThread extends Thread implements Runnable{
 		    		if(message.startsWith("/")){
 		    			if(message.startsWith("//")){
 		    				if(message.trim().equals("//smile")){
-		    					//System.out.println("hello");
+		    					System.out.println("hello");
 		    					Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
 		    					for(String key:keys){
 		    						if(this==ChatServer.ServerThreadHashMap.get(key)){
@@ -55,8 +55,8 @@ public class ServerThread extends Thread implements Runnable{
 		    				else if(message.startsWith("//hi")){
 		    					String[] Words=message.split("\\s",2);
 		    					//System.out.println(Words.length);
-		    					Words[1]=Words[1].trim();
 		    					if(Words.length>1&&Words[1]!=null){
+		    						Words[1]=Words[1].trim();
 		    						if(!Words[1].isEmpty()){
 		    						int flag=0;
 		    						Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
@@ -181,10 +181,10 @@ public class ServerThread extends Thread implements Runnable{
 		    			if(ChatServer.ServerThreadHashMap.containsKey(names[1])){
 		    				PW.println("Name exist, please choose another name.");
 		    			}else{
-		    				ChatServer.ServerThreadHashMap.put(names[1], this);
-		    				PW.println("Welcome to our chatroom, "+names[1]);
+		    				PW.println(names[1]+" , Welcome to our chatroom!");
 		    				this.clientname=names[1];
 		    				LoginStatus=true;
+		    				ChatServer.ServerThreadHashMap.put(names[1], this);
 		    				Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
     						for(String key:keys){
     							if(key!=this.clientname){
@@ -216,7 +216,8 @@ public class ServerThread extends Thread implements Runnable{
 			return BRflow.readLine();
 		} catch (IOException e) {
 			// TODO: handle exception
-			ChatServer.ServerThreadHashMap.remove(s);
+			ChatServer.ServerThreadHashMap.remove(this.clientname);
+			this.stop();
 		}
 		return null;
 	}

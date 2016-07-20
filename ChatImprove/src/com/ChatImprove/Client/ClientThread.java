@@ -24,6 +24,7 @@ public class ClientThread extends Thread {
 				if(message.contains("Welcome to our chatroom")){
 					String[] name=message.split(" ",2);
 					username=name[0];
+					WriteHistory(username,"");
 					//System.out.println(username);				
 				}
 				if(message.startsWith("/quit")){
@@ -65,10 +66,20 @@ public class ClientThread extends Thread {
 			}
 		} catch (IOException e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Server is boomming and disconnected!");
+			try {
+				s.close();
+				Thread.sleep(5000);
+			} catch (InterruptedException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			System.exit(0);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Server is boomming and disconnected!");
 		}
     }
     
@@ -79,8 +90,12 @@ public class ClientThread extends Thread {
 			filename.createNewFile();
 		}
 		FileWriter wr=new FileWriter(filepath,true);
-		wr.write((content+"\r\n"));//write column with \n
-		wr.close();
+		if(content.equals("")){
+			wr.close();
+		}else{
+			wr.write((content+"\r\n"));//write column with \n
+			wr.close();
+		}
     }
     
     private String ReadHistory(File Filename) throws IOException
@@ -92,13 +107,14 @@ public class ClientThread extends Thread {
 	            fileread = new FileReader(Filename); 
 	            bufread = new BufferedReader(fileread);
 	            int LineColNum=GetTotalLines(Filename);
+	            //System.out.println(LineColNum);
 	            try { 
 	            	if(LineColNum<50){
 	                System.out.println("You message history is less than 50 !");
 	            		while ((read = bufread.readLine()) != null) { 
 	                    readStr = readStr + read+ "\n"; 
 	                } 
-	            		readStr.substring(0,readStr.length()-2);
+	            		readStr.substring(0,((LineColNum==0)?readStr.length():readStr.length()-2));
 	                }else{
 	                	readStr=ReadHistory(Filename, LineColNum, 50);
 	                }

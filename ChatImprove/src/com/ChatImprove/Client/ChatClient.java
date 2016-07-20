@@ -26,7 +26,7 @@ public class ChatClient {
 				}
 			}	
 			}catch(Exception e){
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println("Server was closed!");
 			}
 		}
