@@ -158,6 +158,7 @@ public class ServerThread extends Thread implements Runnable{
     						ChatServer.OnlineUserNum--;
     				        System.out.println("Current the number of online user is: "+ChatServer.OnlineUserNum);
     						ChatServer.ServerThreadHashMap.remove(this.clientname,this);
+    						//System.out.println(ChatServer.ServerThreadHashMap.size());
     						s.close();
     						this.stop();
     						CloseThread=true;
@@ -242,6 +243,7 @@ public class ServerThread extends Thread implements Runnable{
 		} catch (IOException e) {
 			// TODO: handle exception
 			//this.stop();
+			if(!CloseThread){
 			if(LoginStatus)
 			{
 				Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
@@ -260,6 +262,7 @@ public class ServerThread extends Thread implements Runnable{
 			else{
 				this.stop();
 				System.out.println("One client closed the console without logging in!");
+			}
 			}
 			CloseThread=true;
 		}
