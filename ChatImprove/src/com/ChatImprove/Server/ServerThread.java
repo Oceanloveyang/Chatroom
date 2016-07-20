@@ -127,7 +127,7 @@ public class ServerThread extends Thread implements Runnable{
 		    			}
 		    			
 		    			else if(message.startsWith("/who")){
-		    				int count=1;
+		    				int count=0;
 		    				PW.println("Current Online User:");
 		    				Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
     						for(String key:keys){
@@ -197,6 +197,7 @@ public class ServerThread extends Thread implements Runnable{
 		    		}
 		    	}else if(message.startsWith("/quit")){
 		    		PW.println("/quit with out login!");
+		    		CloseThread=true;
 		    		}else{
 		    			PW.println("Invaild Command!");
 		    		}
@@ -216,8 +217,9 @@ public class ServerThread extends Thread implements Runnable{
 			return BRflow.readLine();
 		} catch (IOException e) {
 			// TODO: handle exception
-			ChatServer.ServerThreadHashMap.remove(this.clientname);
 			this.stop();
+			if(LoginStatus)
+			ChatServer.ServerThreadHashMap.remove(this.clientname,this);
 		}
 		return null;
 	}
