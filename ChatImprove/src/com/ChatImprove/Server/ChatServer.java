@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatServer {
     public static ServerSocket ss=null;
+    public static int OnlineUserNum=0;
 	public static ConcurrentHashMap<String, ServerThread> ServerThreadHashMap= new ConcurrentHashMap<String, ServerThread>();
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub

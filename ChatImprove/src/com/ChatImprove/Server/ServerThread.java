@@ -98,6 +98,9 @@ public class ServerThread extends Thread implements Runnable{
 		    						}
 		    					}
 		    				}
+		    				else{
+		    					PW.println("Not the default message! You can see the manual with /help");
+		    				}
 		    				
 		    			}else if(message.startsWith("/to")){
 		    				String[] words=message.split("\\s",3);
@@ -151,13 +154,30 @@ public class ServerThread extends Thread implements Runnable{
 			    					pw.println("#"+this.clientname+" has left our chatroom!");
     							}
     						}
+    						System.out.println(this.clientname+" has left our chatroom!");
+    						ChatServer.OnlineUserNum--;
+    				        System.out.println("Current the number of online user is: "+ChatServer.OnlineUserNum);
     						ChatServer.ServerThreadHashMap.remove(this.clientname,this);
     						s.close();
     						this.stop();
     						CloseThread=true;
 		    			}
+		    			else if(message.startsWith("/help")){
+		    				PW.println("----------ChatRoom Manual---------");
+		    				PW.println("1.broadcast message startswith everything except \"/\"");
+		    				PW.println("2.command message startswith \"/\":");
+		    				PW.println("(1).\"/login + username\" to log in chatroom.");
+		    				PW.println("(2).\"/to + username +message\" to start a private chat.");
+		    				PW.println("(3).\"/who\" to query current online users.");
+		    				PW.println("(4).\"/history + [parameter] + [parameter]\" to query chat history.");
+		    				PW.println("(5).\"/quit\" to log out.");
+		    				PW.println("3.default message startswith\"//\":");
+		    				PW.println("(1).\"//smile\" to smile to other users.");
+		    				PW.println("(2).\"//hi + [username]\" to greet to whether a person or other users.");
+		    				PW.println("-----------------end--------------");
+		    			}
 		    			else{
-		    				PW.println("Not the default message!");
+		    				PW.println("Not the default message!You can see the manual with /help");
 		    			}
 		    			
 		    		}else{
@@ -169,8 +189,8 @@ public class ServerThread extends Thread implements Runnable{
 		    					pw.println("#"+this.clientname+" says to you: "+ message);
 		    					}
 		    			PW.println("#You say to others: "+message);
-		    		}
-		    	}
+		    		 }
+		    	  }
 		    	}else{
 		    		if(message.startsWith("/login")){
 		    			String[] names=message.split("\\s",2);
@@ -185,6 +205,9 @@ public class ServerThread extends Thread implements Runnable{
 		    				this.clientname=names[1];
 		    				LoginStatus=true;
 		    				ChatServer.ServerThreadHashMap.put(names[1], this);
+		    				ChatServer.OnlineUserNum++;
+		    				System.out.println(names[1]+" has joined our chatroom!");
+		    				System.out.println("Current the number of online user is: "+ChatServer.OnlineUserNum);
 		    				Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
     						for(String key:keys){
     							if(key!=this.clientname){
@@ -197,6 +220,7 @@ public class ServerThread extends Thread implements Runnable{
 		    		}
 		    	}else if(message.startsWith("/quit")){
 		    		PW.println("/quit with out login!");
+		    		this.stop();
 		    		CloseThread=true;
 		    		}else{
 		    			PW.println("Invaild Command!");
@@ -212,14 +236,32 @@ public class ServerThread extends Thread implements Runnable{
 	}
 
   	
-	private String ReadFromClient(){
+	private String ReadFromClient() throws IOException{
 		try {
 			return BRflow.readLine();
 		} catch (IOException e) {
 			// TODO: handle exception
-			this.stop();
+			//this.stop();
 			if(LoginStatus)
-			ChatServer.ServerThreadHashMap.remove(this.clientname,this);
+			{
+				Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
+				for(String key:keys){
+					if(key!=this.clientname){
+						ServerThread t=ChatServer.ServerThreadHashMap.get(key);
+    					PrintWriter pw=new PrintWriter(t.s.getOutputStream(),true);
+    					pw.println(this.clientname+" has escaped from our chatroom!");
+					}
+				}
+				this.stop();
+				ChatServer.ServerThreadHashMap.remove(this.clientname,this);
+				ChatServer.OnlineUserNum--;
+				System.out.println(this.clientname+ " closed the console without logging out!");
+			}
+			else{
+				this.stop();
+				System.out.println("One client closed the console without logging in!");
+			}
+			CloseThread=true;
 		}
 		return null;
 	}
