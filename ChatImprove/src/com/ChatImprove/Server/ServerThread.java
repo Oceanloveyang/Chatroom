@@ -39,7 +39,7 @@ public class ServerThread extends Thread implements Runnable{
 		    		if(message.startsWith("/")){
 		    			if(message.startsWith("//")){
 		    				if(message.trim().equals("//smile")){
-		    					System.out.println("hello");
+		    					//System.out.println("hello");
 		    					Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
 		    					for(String key:keys){
 		    						if(this==ChatServer.ServerThreadHashMap.get(key)){

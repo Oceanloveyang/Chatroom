@@ -18,7 +18,7 @@ public class ChatServer {
 			while(true){
 				Socket s=ss.accept();
 				new Thread(new ServerThread(s)).start();
-				System.out.println("Client "+s.getInetAddress()+" connected to the server!");
+				System.out.println("Client "+s.getRemoteSocketAddress()+" connected to the server!");
 			}
 		} catch (IOException e) {
 			// TODO: handle exception

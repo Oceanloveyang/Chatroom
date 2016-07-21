@@ -6,7 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ClientThread extends Thread {
+public class ClientThread extends Thread implements Runnable{
 	//create a Socket 
     Socket s;
 		//
