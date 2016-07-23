@@ -59,6 +59,11 @@ public class ClientThread extends Thread implements Runnable{
 						System.out.print(str);
 					}
 				}
+				else if(message.startsWith("You are kicked out by admin")){
+					System.out.println("You are kicked out by admin!");
+					Thread.sleep(5000);
+					System.exit(0);
+				}
 				else{
 					System.out.println(message);
 				}

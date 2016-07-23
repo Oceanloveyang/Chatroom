@@ -24,6 +24,7 @@ public class ChatServer {
 			// TODO: handle exception
 			System.out.println("The port is occupied!");
 		}finally{
+			if(ss!=null)
 			ss.close();
 		}
 

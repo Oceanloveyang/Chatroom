@@ -10,6 +10,7 @@ public class ServerThread extends Thread implements Runnable{
     BufferedReader BRflow;
     PrintWriter PW;
     boolean LoginStatus=false;
+    boolean isAdmin=false;
     private volatile boolean CloseThread=false;
     
     public ServerThread(Socket s){
@@ -76,7 +77,7 @@ public class ServerThread extends Thread implements Runnable{
 			    								}else{
 			    									ServerThread t=ChatServer.ServerThreadHashMap.get(key);
 							    					PrintWriter pw=new PrintWriter(t.s.getOutputStream(),true);
-							    					pw.println("#"+this.clientname +" greets to "+key+": Hello, nice to meet you!");
+							    					pw.println("#"+this.clientname +" greets to "+Words[1]+": Hello, nice to meet you!");
 			    								}
 			    							}
 			    						}
@@ -140,6 +141,31 @@ public class ServerThread extends Thread implements Runnable{
     						//PW.println("Now the number of users online is: "+ ChatServer.ServerThreadHashMap.size());
     						PW.println("Now the number of users online is: "+ count);
 		    			}
+		    			else if(message.startsWith("/kick")){
+		    				if(isAdmin){
+		    					String[] names=message.split("\\s",2);
+		    					if(names.length>1&&!names[1].trim().isEmpty()){
+		    						names[1]=names[1].trim();
+		    						int flag=0;
+		    						Collection<String> keys = ChatServer.ServerThreadHashMap.keySet();
+		    						for(String key:keys){
+		    							if(key!=this.clientname&&key.equals(names[1])){
+		    								flag=1;
+		    								PW.println("You will kick "+names[1]+"out!");
+		    								ServerThread t=ChatServer.ServerThreadHashMap.get(key);
+					    					PrintWriter pw=new PrintWriter(t.s.getOutputStream(),true);
+					    					pw.println("You are kicked out by admin");
+					    					t.stop();
+					    					ChatServer.ServerThreadHashMap.remove(names[1]);
+		    								break;
+		    							}
+		    						}
+		    				}
+		    				else{
+		    					PW.println("You are not Admin, can not kick people!");
+		    				}
+		    			}
+		    			}
 		    			else if(message.startsWith("/history")){
 		    				PW.println(message);
 		    			}
@@ -189,8 +215,9 @@ public class ServerThread extends Thread implements Runnable{
 		    					PrintWriter pw=new PrintWriter(t.s.getOutputStream(),true);
 		    					pw.println("#"+this.clientname+" says to you: "+ message);
 		    					}
-		    			PW.println("#You say to others: "+message);
+		    			
 		    		 }
+						PW.println("#You say to others: "+message);
 		    	  }
 		    	}else{
 		    		if(message.startsWith("/login")){
@@ -202,6 +229,11 @@ public class ServerThread extends Thread implements Runnable{
 		    			if(ChatServer.ServerThreadHashMap.containsKey(names[1])){
 		    				PW.println("Name exist, please choose another name.");
 		    			}else{
+		    				names[1]=names[1].trim();
+		    				if(names[1].equals("Admin")){
+		    					isAdmin=true;
+		    				}
+		    				
 		    				PW.println(names[1]+" , Welcome to our chatroom!");
 		    				this.clientname=names[1];
 		    				LoginStatus=true;
@@ -228,7 +260,8 @@ public class ServerThread extends Thread implements Runnable{
 		    		}
 		    	}
 		    }
-			}catch(IOException e){
+		    }
+		    catch(IOException e){
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("The Server has encounted some problems!");
